@@ -1,0 +1,199 @@
+body {
+  background-color: #1D1D1F;
+}
+
+.App {
+  height: 150vh;
+  /* overflow-y: scroll; */
+  text-align: center;
+  display: grid;
+}
+
+.header {
+  height: 100px;
+  background-color: black;
+  color: black;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  z-index: 100;
+  width: 100%;
+}
+
+.title {
+  font-size: 50px;
+  padding-left: 25px;
+  font-weight: bold;
+  color: white;
+}
+
+
+.about-us {
+  font-size: 35px;
+  padding-left: 1325px;
+  font-weight: bold;
+  color: white;
+}
+
+.overview {
+  color: whitesmoke;
+  /* overflow: hidden; */
+  font-size: 30px;
+  font-weight: Semi Bold;
+  font-family: Arial, sans-serif;
+  text-align: left;
+  /* margin-top: 60%; */
+  position: absolute;
+  left: 50px;
+  width: 50%;
+  top: 60%;
+  /* height: 200px; */
+  /* margin: 0 auto; */
+}
+
+.graph{
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+}
+
+/* .technologies{
+  font-size: 35px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  color:white;
+  padding-top: 550px;
+} */
+
+.images {
+  position: absolute;
+  height: 100px;
+  width: 100%;
+  margin-top: 900px;
+}
+
+.D3 {
+  margin-top: 250px;
+  height: 100px;
+}
+
+.python {
+  height: 100px;
+}
+
+.pytorch{
+  height: 100px;
+}
+
+.node{
+  height: 100px;
+}
+
+.skit{
+  height: 100px;
+}
+
+.selenium{
+  height: 100px;
+}
+
+.mongo{
+  height: 100px;
+}
+
+.aws{
+  height: 100px;
+}
+
+.react{
+  height: 100px;
+}
+
+
+
+.try-productscout-button {
+  padding: 25px 45px;
+  font-size: 40px;
+  font-family: Arial, sans-serif;
+  background-color: black;
+  color: whitesmoke;
+  border: none;
+  border-radius: 5px;
+  font-weight: Semi Bold;
+  cursor: pointer;
+  position: absolute;
+  bottom: 240px;
+  right: 150px;
+}
+
+@media only screen and (max-width: 1200px) {
+  .overview{
+    font-size: 12px;
+    width: 80%;
+  }
+  .try-productscout-button {
+    padding: 8px 18px;
+    font-size: 12px;
+    font-family: Arial, sans-serif;
+    background-color: black;
+    color: whitesmoke;
+    border: none;
+    border-radius: 5px;
+    font-weight: Semi Bold;
+    cursor: pointer;
+    position: absolute;
+    top: 85%;
+    /* left:50px; */
+    width: 200px;
+    height: 30px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* bottom: 240px; */
+    /* right: 150px; */
+  }
+
+  .images{
+    position: absolute;
+    height: 100px;
+    width: 50%;
+    margin-top: 900px;
+  }
+
+  .D3{
+    height: 50px;
+  }
+
+  .python {
+    height: 50px;
+  }
+  
+  .pytorch{
+    height: 50px;
+  }
+  
+  .node{
+    height: 50px;
+  }
+  
+  .skit{
+    height: 50px;
+  }
+  
+  .selenium{
+    height: 50px;
+  }
+  
+  .mongo{
+    height: 50px;
+  }
+  
+  .aws{
+    height: 50px;
+  }
+  
+  .react{
+    height: 50px;
+  }
+}
