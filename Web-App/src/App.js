@@ -10,13 +10,14 @@ import react from "./images/react.png"
 import Graph from './graph';
 
 import './App.css';
+// import './login_page.css';
 
 function App() {
   return (
     <div className="App">
       <div className="header">
         <h1 className="title">ProductScout</h1>
-        <h1 className="about-us">About Us</h1>
+        {/* <h1 className="about-us">About Us</h1> */}
       </div>
 
     
@@ -24,7 +25,7 @@ function App() {
         <Graph />
       </div>
       
-
+      
       <div className="overview">
         Welcome to ProductScout - your one-stop solution for e-commerce trend forecasting. 
         With our advanced recommendation system, we use publicly available data to provide insightful predictions on future trends in the market. 
@@ -52,6 +53,8 @@ function App() {
         <img src = {react} className = "aws"/>
       </div>
     </div>
+
+    
   );
 }
 
