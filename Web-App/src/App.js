@@ -17,7 +17,9 @@ function App() {
     <div className="App">
       <div className="header">
         <h1 className="title">ProductScout</h1>
-        {/* <h1 className="about-us">About Us</h1> */}
+        <button className="about-us-button">About Us</button>
+        <button className="payment-plan-button">Payment Plan</button>
+        <button className="login-button">Login/Signup</button>
       </div>
 
     
@@ -50,7 +52,7 @@ function App() {
         <img src = {selenium} className = "selenium"/>
         <img src = {mongo} className = "mongo"/>
         <img src = {aws} className = "aws"/>
-        <img src = {react} className = "aws"/>
+        <img src = {react} className = "react"/>
       </div>
     </div>
 
