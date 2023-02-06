@@ -27,12 +27,42 @@ body {
 }
 
 
-.about-us {
-  font-size: 35px;
-  padding-left: 1325px;
-  font-weight: bold;
+.about-us-button {
+  padding: 10px 20px;
+  font-size: 25px;
+  font-weight: Bold;
+  font-family: Arial, sans-serif;
+  background-color: black;
   color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
+
+.payment-plan-button {
+  padding: 10px 20px;
+  font-size: 25px;
+  font-weight: Bold;
+  font-family: Arial, sans-serif;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-button {
+  padding: 10px 20px;
+  font-size: 25px;
+  font-weight: Bold;
+  font-family: Arial, sans-serif;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 
 .overview {
   color: whitesmoke;
@@ -60,7 +90,7 @@ body {
   font-family: Arial, sans-serif;
   color: white;
   position: absolute;
-  top: 105%;
+  top: 110%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -70,7 +100,7 @@ body {
   position: absolute;
   height: 100px;
   width: 100%;
-  margin-top: 900px;
+  margin-top: 950px;
 }
 
 .D3 {
@@ -99,12 +129,13 @@ body {
 
 @media only screen and (max-width: 1200px) {
   .overview{
-    font-size: 12px;
+    font-size: 15px;
     width: 80%;
   }
+
   .try-productscout-button {
     padding: 8px 18px;
-    font-size: 12px;
+    font-size: 25px;
     font-family: Arial, sans-serif;
     background-color: black;
     color: whitesmoke;
@@ -114,8 +145,19 @@ body {
     cursor: pointer;
     position: absolute;
     top: 85%;
-    width: 200px;
-    height: 30px;
+    width: 250px;
+    height: 80px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .technologies {
+    font-size: 25px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    color: white;
+    position: absolute;
+    top: 110%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
@@ -124,10 +166,52 @@ body {
     position: absolute;
     height: 100px;
     width: 50%;
-    margin-top: 900px;
+    padding-top: 1%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
-
+  
   .D3, .python, .pytorch, .node, .skit, .selenium, .mongo, .aws, .react {
     height: 50px;
+  }
+}
+
+@media only screen and (max-height: 800px) {
+  .overview{
+    font-size: 20px;
+    width: 80%;
+  }
+
+  .graph{
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+  }
+  
+  .try-productscout-button {
+    padding: 8px 18px;
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+    background-color: black;
+    color: whitesmoke;
+    border: none;
+    border-radius: 5px;
+    font-weight: Semi Bold;
+    cursor: pointer;
+    position: absolute;
+    top: 85%;
+    width: 230px;
+    height: 60px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  @media only screen and (max-height: 800px) and (max-width: 1200px) { 
+    .overview{
+      font-size: 15px;
+      width: 80%;
+    }
   }
 }
