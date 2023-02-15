@@ -4,12 +4,17 @@ import './login_page.css';
 function LoginPage() {
   return (
     <div className="login-page">
-      <h2>Login to ProductScout</h2>
+      <div className='login-greet'>Login to ProductScout</div>
       <form>
-        <label htmlFor="email">Email:</label>
+        <label htmlFor="email">
+          <div className='email-header'>Email</div>
+        </label>
         <input type="email" id="email" name="email" required />
 
-        <label htmlFor="password">Password:</label>
+        <label htmlFor="password">
+          <div className='password-header'>Password</div>
+
+          </label>
         <input type="password" id="password" name="password" required />
 
         <button type="submit">Login</button>

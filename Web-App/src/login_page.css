@@ -29,11 +29,57 @@ input {
 
 button {
   padding: 10px;
-  background-color: #007bff;
+  background-color: black;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   width: 100%;
   max-width: 400px;
+}
+
+.login-greet{
+  color: whitesmoke;
+  font-size: 36px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.close{
+  color: whitesmoke;
+  font-size: 26px;
+  font-weight: Semi bold;
+}
+
+.email-header{
+  font-family: Arial, sans-serif;
+  color: whitesmoke;
+  font-size: 22px;
+}
+
+.password-header{
+  font-family: Arial, sans-serif;
+  color: whitesmoke;
+  font-size: 22px;
+}
+
+.close-button{
+  padding: 8px 18px;
+  font-family: Arial, sans-serif;
+  background-color: black;
+  color: whitesmoke;
+  border: none;
+  border-radius: 5px;
+  font-weight: Semi Bold;
+  cursor: pointer;
+  position: absolute;
+  top: 75%;
+  width: 250px;
+  height: 80px;
+  left: 50%;
+  transform: translate(-50%, -50%); 
 }

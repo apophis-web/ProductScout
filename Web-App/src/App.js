@@ -62,17 +62,19 @@ function App() {
       ) : (
         <div className="login-page">
           <button className="close-button" onClick={handleLoginClose}>
-            X
+            <div className='close'>
+              Homepage
+            </div>
           </button>
-          <h2>Login to ProductScout</h2>
+          <div className='login-greet'>Login to ProductScout</div>
           <form>
             <label>
-              Email:
+              <div className='email-header'>Email</div>
               <input type="email" name="email" required />
             </label>
             <br />
             <label>
-              Password:
+              <div className='password-header'>Password</div>
               <input type="password" name="password" required />
             </label>
             <br />
