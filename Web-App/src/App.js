@@ -54,7 +54,7 @@ function App() {
             <img src={require('./images/node.png')} className="node" alt="node" />
             <img src={require('./images/skit.png')} className="skit" alt="skit" />
             <img src={require('./images/selenium.png')} className="selenium" alt="selenium" />
-            <img src={require('./images/mongodb.svg')} className="mongo" alt="mongo" />
+            <img src={require('./images/mongodb.png')} className="mongo" alt="mongo" />
             <img src={require('./images/aws.png')} className="aws" alt="aws" />
             <img src={require('./images/react.png')} className="react" alt="react" />
           </div>
