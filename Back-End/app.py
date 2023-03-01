@@ -11,16 +11,16 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 
-with open(r'C:\Users\Hassa\model.pkl', 'rb') as f:
+with open(r'/home/ubuntu/ProductScout/Back-End/model.pkl', 'rb') as f:
     model = pickle.load(f)  
 
-with open(r'C:\Users\Hassa\cat_encoder.pkl', 'rb') as f:
+with open(r'/home/ubuntu/ProductScout/Back-End/cat_encoder.pkl', 'rb') as f:
     cat_encoder = pickle.load(f)
 
-with open(r'C:\Users\Hassa\sub_cat_encoder.pkl', 'rb') as f:
+with open(r'/home/ubuntu/ProductScout/Back-End/sub_cat_encoder.pkl', 'rb') as f:
     sub_cat_encoder = pickle.load(f) 
 
-with open(r'C:\Users\Hassa\subsub_cat_encoder.pkl', 'rb') as f:
+with open(r'/home/ubuntu/ProductScout/Back-End/subsub_cat_encoder.pkl', 'rb') as f:
     subsub_cat_encoder = pickle.load(f)
 
 app = Flask(__name__)
