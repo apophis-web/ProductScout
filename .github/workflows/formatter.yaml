@@ -1,0 +1,20 @@
+name: Check Formatting
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Install Black
+      run: pip install black
+
+    - name: Run Black
+      run: black .
