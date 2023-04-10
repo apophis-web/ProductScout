@@ -1,0 +1,225 @@
+body {
+  background-color: #1D1D1F;
+}
+
+.App {
+  height: 150vh;
+  text-align: center;
+  display: grid;
+}
+
+.header {
+  height: 100px;
+  background-color: black;
+  color: black;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  z-index: 100;
+  width: 100%;
+}
+
+.title {
+  font-size: 50px;
+  padding-left: 25px;
+  font-weight: bold;
+  color: white;
+}
+
+
+.about-us-button {
+  padding: 10px 20px;
+  font-size: 25px;
+  font-weight: Bold;
+  font-family: Arial, sans-serif;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.payment-plan-button {
+  padding: 10px 20px;
+  font-size: 25px;
+  font-weight: Bold;
+  font-family: Arial, sans-serif;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-button {
+  padding: 10px 20px;
+  font-size: 25px;
+  font-weight: Bold;
+  font-family: Arial, sans-serif;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.overview {
+  color: whitesmoke;
+  font-size: 30px;
+  font-weight: Semi Bold;
+  font-family: Arial, sans-serif;
+  text-align: left;
+  position: absolute;
+  left: 50px;
+  width: 50%;
+  top: 60%;
+}
+
+.graph{
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+}
+
+.technologies {
+  font-size: 35px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  color: white;
+  position: absolute;
+  top: 110%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.images {
+  position: absolute;
+  height: 100px;
+  width: 100%;
+  margin-top: 950px;
+}
+
+.D3 {
+  margin-top: 250px;
+  height: 100px;
+}
+
+.python, .pytorch, .node, .skit, .selenium, .mongo, .aws, .react {
+  height: 100px;
+}
+
+.try-productscout-button {
+  padding: 25px 45px;
+  font-size: 40px;
+  font-family: Arial, sans-serif;
+  background-color: black;
+  color: whitesmoke;
+  border: none;
+  border-radius: 5px;
+  font-weight: Semi Bold;
+  cursor: pointer;
+  position: absolute;
+  bottom: 240px;
+  right: 150px;
+}
+
+.chartContainer {
+  display: none;
+  position: absolute;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+  top: 420px
+}  
+
+@media only screen and (max-width: 1200px) {
+  .overview{
+    font-size: 15px;
+    width: 80%;
+  }
+
+  .try-productscout-button {
+    padding: 8px 18px;
+    font-size: 25px;
+    font-family: Arial, sans-serif;
+    background-color: black;
+    color: whitesmoke;
+    border: none;
+    border-radius: 5px;
+    font-weight: Semi Bold;
+    cursor: pointer;
+    position: absolute;
+    top: 85%;
+    width: 250px;
+    height: 80px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .technologies {
+    font-size: 25px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    color: white;
+    position: absolute;
+    top: 110%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .images{
+    position: absolute;
+    height: 100px;
+    width: 50%;
+    padding-top: 1%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .D3, .python, .pytorch, .node, .skit, .selenium, .mongo, .aws, .react {
+    height: 50px;
+  }
+}
+
+@media only screen and (max-height: 800px) {
+  .overview{
+    font-size: 20px;
+    width: 80%;
+  }
+
+  .graph{
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+  }
+  
+  .try-productscout-button {
+    padding: 8px 18px;
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+    background-color: black;
+    color: whitesmoke;
+    border: none;
+    border-radius: 5px;
+    font-weight: Semi Bold;
+    cursor: pointer;
+    position: absolute;
+    top: 85%;
+    width: 230px;
+    height: 60px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  @media only screen and (max-height: 800px) and (max-width: 1200px) { 
+    .overview{
+      font-size: 15px;
+      width: 80%;
+    }
+  }
+}
