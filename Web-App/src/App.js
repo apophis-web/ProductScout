@@ -59,6 +59,8 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [text, setText] = useState('');
   const [query, setQuery] = useState([]);
+  const [threshold, setThreshold] = useState('');
+  const [trend, setTrend] = useState('');
 
   const handleclick = () => {
     var data = {
@@ -82,12 +84,19 @@ function App() {
               }).then((response) => {
                 response.json().then((body) => {
                   setdata(body["original"])
+                  setThreshold(body["threshold"])
+                  setTrend(body["trend"])
                   setdata2(body["pred"])
                   console.log(body)
                   var boxes = document.getElementsByClassName(
                     "chartContainer",
                   )
                   boxes[0].style.display = "block";
+
+                  var information = document.getElementsByClassName(
+                    "data",
+                  )
+                  information[0].style.display = "flex";
                 })
               })
               
@@ -211,15 +220,25 @@ function App() {
             ))}
           </div> 
 
+          <div className = "data">
+            <div className = "threshold">
+              POPULARITY = {threshold}
+            </div>
+
+            <div className = "trend">
+              TREND = {trend}
+            </div>
+          </div>
+
+
           <div className="chartContainer">
-            <LineChart width={1000} height={500} data={data} backgroundColor="white">
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="x" />
+            <LineChart width={1500} height={500} data={data} backgroundColor="white">
+              <XAxis dataKey="x" tick={false} />
               <YAxis />
               <Tooltip />
               <Legend />
               <Line
-                type="monotone"
+                type="catmullRom"
                 dataKey="y"
                 stroke="red"
                 activeDot={{ r: 8 }}
@@ -230,6 +249,8 @@ function App() {
               />
             </LineChart>
           </div> 
+
+          
         </div>
       )}
     </div>

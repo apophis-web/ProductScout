@@ -126,13 +126,32 @@ body {
   right: 150px;
 }
 
+.data{
+  display:flex;
+  display: none;
+  font-size: 25px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  color: white;
+  margin-top: 360px;
+
+}
+
+.threshold {
+  margin-right: 200px;
+}
+
+.trend {
+  margin-left: 200px;
+} 
+
 .chartContainer {
   display: none;
   position: absolute;
   justify-content: center;
   align-items: flex-start;
   height: 100vh;
-  top: 420px
+  top: 380px
 }  
 
 @media only screen and (max-width: 1200px) {

@@ -1,4 +1,5 @@
 import pickle
+import numpy as np
 from pymongo import MongoClient
 from flask_cors import CORS, cross_origin
 from flask import Flask, request, jsonify
@@ -16,6 +17,7 @@ import statsmodels.api as sm
 from datetime import datetime, timedelta
 
 df = pd.read_csv('processed_data.csv')
+threshold = df['Label'].mean()
 
 with open(r'model.pkl', 'rb') as f:
     model = pickle.load(f)  
@@ -48,6 +50,12 @@ def getpred(df, columnname, days, span = 7):
     forecast = results.predict(start=len(ema_20), end=len(ema_20)+4)
     forecast = results.predict(start=len(ema_20), end=len(ema_20)+days-1)
     return list(forecast)
+
+def calculate_trend(values):
+    x = np.arange(len(values))
+    y = np.array(values)
+    a, b = np.polyfit(x, y, 1)
+    return a
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -139,6 +147,7 @@ def get_cat():
 
     return {"mapping":categoric_mapping, "main_list":main_list}
 
+
 @app.route('/get_text', methods = ['POST'])    
 def get_text():
     r = request.json
@@ -182,15 +191,45 @@ def get_text():
 
     count = 0
     temp = df[(df['Category'] == cat) & (df['Sub-Category'] == subcat) & (df['Sub-Sub-Category'] == subsubcat)]
+
     for i in range(len(temp)):
-        original.append({ 'x': count, 'y': list(temp["Label"])[i] })
-        count = count + 1
+        date = str(temp["Year"].tolist()[i]) + "-" + str(temp["Month"].tolist()[i]) + "-" + str(temp["Day"].tolist()[i]) + " (" + str(temp["Week_Day"].tolist()[i]) + ") "
+        original.append({ 'x': date, 'y': temp["Label"].tolist()[i] })
+
+    last_date = str(temp["Year"].tolist()[len(temp)-1]) + "-" + \
+                str(temp["Month"].tolist()[len(temp)-1]) + "-" + \
+                str(temp["Day"].tolist()[len(temp)-1]) + " (" + \
+                str(temp["Week_Day"].tolist()[len(temp)-1]) + ") "
+    
+    date_str = last_date.split(" ")[0]
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+
+    next_dates = []
+    for i in range(1, len(predictions) + 1):
+        next_date_obj = date_obj + timedelta(days=i)
+        next_date_str = next_date_obj.strftime("%Y-%m-%d")
+        next_weekday_str = next_date_obj.strftime("%A")
+        next_date_formatted = f"{next_date_str} ({next_weekday_str})"
+        next_dates.append(next_date_formatted)
 
 
     for i in range(len(predictions)):
-        original.append({ 'x': count + i, 'y': predictions[i] })
+        original.append({ 'x': next_dates[i], 'y': predictions[i] })
 
-    return {"pred": pred, "original": original}
+    mean = sum(predictions) / len(predictions)
+    trend = calculate_trend(predictions)
+
+    if (threshold < mean):
+        threshold_val = "High"
+    if (threshold > mean):
+        threshold_val = "Low"
+
+    if (trend > 0):
+        trend_val = "Increasing"
+    if (trend < 0):
+        trend_val = "Decreasing"
+
+    return {"pred": pred, "original": original, "threshold": threshold_val, "trend": trend_val}
     
 if __name__ == "__main__":
     app.run(port = 5000,debug = True,)
