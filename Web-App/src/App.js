@@ -239,7 +239,7 @@ function App() {
               <Legend />
               <Line
                 type="catmullRom"
-                dataKey="y"
+                dataKey="label"
                 stroke="red"
                 activeDot={{ r: 8 }}
                 strokeWidth={3}

@@ -1,4 +1,5 @@
 import pickle
+import math
 import numpy as np
 from pymongo import MongoClient
 from flask_cors import CORS, cross_origin
@@ -194,7 +195,7 @@ def get_text():
 
     for i in range(len(temp)):
         date = str(temp["Year"].tolist()[i]) + "-" + str(temp["Month"].tolist()[i]) + "-" + str(temp["Day"].tolist()[i]) + " (" + str(temp["Week_Day"].tolist()[i]) + ") "
-        original.append({ 'x': date, 'y': temp["Label"].tolist()[i] })
+        original.append({ 'x': date, 'label': temp["Label"].tolist()[i] })
 
     last_date = str(temp["Year"].tolist()[len(temp)-1]) + "-" + \
                 str(temp["Month"].tolist()[len(temp)-1]) + "-" + \
@@ -214,18 +215,20 @@ def get_text():
 
 
     for i in range(len(predictions)):
-        original.append({ 'x': next_dates[i], 'y': predictions[i] })
+        original.append({ 'x': next_dates[i], 'label': predictions[i] })
 
     mean = sum(predictions) / len(predictions)
     trend = calculate_trend(predictions)
 
     if (threshold < mean):
         threshold_val = "High"
+
     if (threshold > mean):
         threshold_val = "Low"
 
     if (trend > 0):
         trend_val = "Increasing"
+
     if (trend < 0):
         trend_val = "Decreasing"
 
