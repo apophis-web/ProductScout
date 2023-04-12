@@ -19,6 +19,7 @@ from datetime import datetime, timedelta
 
 df = pd.read_csv('processed_data.csv')
 threshold = df['Label'].mean()
+threshold = round(threshold, 3)
 
 with open(r'model.pkl', 'rb') as f:
     model = pickle.load(f)  
@@ -220,17 +221,18 @@ def get_text():
     mean = sum(predictions) / len(predictions)
     trend = calculate_trend(predictions)
 
+
     if (threshold < mean):
         threshold_val = "High"
-
-    if (threshold > mean):
+    elif ((threshold / 2) < mean):
+        threshold_val = "Moderate"
+    elif ((threshold / 2) > mean):
         threshold_val = "Low"
-
-    if (trend > 0):
+        
+    if trend > 0:
         trend_val = "Increasing"
-
-    if (trend < 0):
-        trend_val = "Decreasing"
+    else:
+         trend_val = "Decreasing"
 
     return {"pred": pred, "original": original, "threshold": threshold_val, "trend": trend_val}
     

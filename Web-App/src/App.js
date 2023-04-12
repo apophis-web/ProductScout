@@ -222,11 +222,11 @@ function App() {
 
           <div className = "data">
             <div className = "threshold">
-              POPULARITY = {threshold}
+              POPULARITY: {threshold}
             </div>
 
             <div className = "trend">
-              TREND = {trend}
+              TREND: {trend}
             </div>
           </div>
 

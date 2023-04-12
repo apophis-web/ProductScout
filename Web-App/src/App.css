@@ -127,11 +127,10 @@ body {
 }
 
 .data{
-  display:flex;
   display: none;
   font-size: 25px;
   font-weight: bold;
-  font-family: Arial, sans-serif;
+  /* font-family: Arial, sans-serif; */
   color: white;
   margin-top: 360px;
 
