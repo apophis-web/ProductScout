@@ -198,10 +198,12 @@ def get_text():
         date = str(temp["Year"].tolist()[i]) + "-" + str(temp["Month"].tolist()[i]) + "-" + str(temp["Day"].tolist()[i]) + " (" + str(temp["Week_Day"].tolist()[i]) + ") "
         original.append({ 'x': date, 'label': temp["Label"].tolist()[i] })
 
-    last_date = str(temp["Year"].tolist()[len(temp)-1]) + "-" + \
-                str(temp["Month"].tolist()[len(temp)-1]) + "-" + \
-                str(temp["Day"].tolist()[len(temp)-1]) + " (" + \
-                str(temp["Week_Day"].tolist()[len(temp)-1]) + ") "
+    # last_date = str(temp["Year"].tolist()[len(temp)-1]) + "-" + \
+    #             str(temp["Month"].tolist()[len(temp)-1]) + "-" + \
+    #             str(temp["Day"].tolist()[len(temp)-1]) + " (" + \
+    #             str(temp["Week_Day"].tolist()[len(temp)-1]) + ") "
+
+    last_date = "2023-04-11 (Tuesday)"
     
     date_str = last_date.split(" ")[0]
     date_obj = datetime.strptime(date_str, "%Y-%m-%d")
