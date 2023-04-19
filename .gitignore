@@ -1,5 +1,9 @@
 node_modules
 
+#Model-Training
+Model-Training/final_generated_dataset.csv
+Model-Training/dataset.csv
+
 #Back-End
 Back-End/model.pkl
 Back-End/processed_data.csv
