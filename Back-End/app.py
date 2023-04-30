@@ -253,6 +253,13 @@ def get_text():
     selected_mapping = subcat + " " + subsubcat
     filtered_dict = {k: v for k, v in dictionary.items() if k.startswith(selected_mapping)}
 
+    bar_chart_data = []
+    for i in range(len(filtered_dict)):
+        sub_dict = {}
+        sub_dict['categoric_mapping'] = list(filtered_dict.keys())[i]
+        sub_dict['value'] = list(filtered_dict.values())[i]
+        bar_chart_data.append(sub_dict)
+
     if (threshold < mean):
         threshold_val = "High"
     elif ((threshold / 2) < mean):
@@ -269,7 +276,8 @@ def get_text():
     min_price = result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['min'][0]
     mean_price = result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['mean'][0]
 
-    return {"pred": pred, "original": original, "threshold": threshold_val, "trend": trend_val, "min_price": min_price, "max_price": max_price, "mean_price": mean_price}
+    return {"pred": pred, "original": original, "threshold": threshold_val, "trend": trend_val, 
+            "min_price": min_price, "max_price": max_price, "mean_price": mean_price, "bar_chart_data":bar_chart_data}
     
 if __name__ == "__main__":
     app.run(port = 5000,debug = True,)
