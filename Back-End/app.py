@@ -18,6 +18,17 @@ import statsmodels.api as sm
 from datetime import datetime, timedelta
 
 df = pd.read_csv('processed_data.csv')
+dataset = pd.read_csv("C:\\Users\\Hassa\\OneDrive\\Desktop\\PRODUCT_SCOUT\\Model-Training\\dataset.csv")
+dataset['Price'] = dataset['Price'].str.replace('Rs. ', '').str.replace(',', '')
+dataset['Price'] = dataset['Price'].astype(float)
+dataset['Date'] = pd.to_datetime(dataset['Date'])
+max_date = dataset['Date'].max()
+start_date = max_date - pd.DateOffset(days=7)
+dataset = dataset[(dataset['Date'] >= start_date) & (dataset['Date'] <= max_date)]
+grouped = dataset.groupby(['Category', 'Sub-Category', 'SubSub-Category'])
+result = grouped['Price'].agg(['max', 'min', 'mean'])
+result = result.reset_index()
+result['mean'] = result['mean'].apply(lambda x: round(x, 0))
 threshold = df['Label'].mean()
 threshold = round(threshold, 3)
 
@@ -143,12 +154,16 @@ def get_cat():
         temp.append(week_day[i])
         temp.append(rate_of_change[i])
         temp.append(standard_dev[i])
-        #temp.append(popularity[i]) 
-        temp.append(0) #APPENDING 0 INSTEAD OF POPULARITY VALUES FOR THE TIME BEING
+        temp.append(popularity[i]) 
+        #temp.append(0) #APPENDING 0 INSTEAD OF POPULARITY VALUES FOR THE TIME BEING
         main_list.append(temp)
 
     return {"mapping":categoric_mapping, "main_list":main_list}
 
+
+@app.route('/get_all_categories', methods = ['GET'])    
+def get_all_categories():
+    return {"categories":[', '.join(sublist) for sublist in df[['Sub-Category', 'Sub-Sub-Category']].drop_duplicates().values.tolist()]}
 
 @app.route('/get_text', methods = ['POST'])    
 def get_text():
@@ -219,10 +234,24 @@ def get_text():
 
     for i in range(len(predictions)):
         original.append({ 'x': next_dates[i], 'label': predictions[i] })
-
     mean = sum(predictions) / len(predictions)
     trend = calculate_trend(predictions)
 
+    
+    latest_year = df['Year'].max()
+    latest_month = df[df['Year'] == latest_year]['Month'].max()
+    latest_day = df[(df['Year'] == latest_year) & (df['Month'] == latest_month)]['Day'].max()
+    latest_data = df[(df['Year'] == latest_year) & (df['Month'] == latest_month) & (df['Day'] == latest_day)]
+    latest_data = latest_data.reset_index(drop=True)
+
+
+    dictionary = {}
+    for i in range(len(latest_data)):
+        mapping = latest_data["Category"].iloc[i] + " " + latest_data["Sub-Category"].iloc[i] + " " + latest_data["Sub-Sub-Category"].iloc[i]
+        dictionary[mapping] = latest_data["Label"].iloc[i]
+
+    selected_mapping = subcat + " " + subsubcat
+    filtered_dict = {k: v for k, v in dictionary.items() if k.startswith(selected_mapping)}
 
     if (threshold < mean):
         threshold_val = "High"
@@ -236,7 +265,11 @@ def get_text():
     else:
          trend_val = "Decreasing"
 
-    return {"pred": pred, "original": original, "threshold": threshold_val, "trend": trend_val}
+    max_price = result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['max'][0]
+    min_price = result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['min'][0]
+    mean_price = result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['mean'][0]
+
+    return {"pred": pred, "original": original, "threshold": threshold_val, "trend": trend_val, "min_price": min_price, "max_price": max_price, "mean_price": mean_price}
     
 if __name__ == "__main__":
     app.run(port = 5000,debug = True,)
