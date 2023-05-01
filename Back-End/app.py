@@ -18,7 +18,7 @@ import statsmodels.api as sm
 from datetime import datetime, timedelta
 
 df = pd.read_csv('processed_data.csv')
-dataset = pd.read_csv("C:\\Users\\Hassa\\OneDrive\\Desktop\\PRODUCT_SCOUT\\Model-Training\\dataset.csv")
+dataset = pd.read_csv("../Model-Training/dataset.csv")
 dataset['Price'] = dataset['Price'].str.replace('Rs. ', '').str.replace(',', '')
 dataset['Price'] = dataset['Price'].astype(float)
 dataset['Date'] = pd.to_datetime(dataset['Date'])
@@ -31,6 +31,7 @@ result = result.reset_index()
 result['mean'] = result['mean'].apply(lambda x: round(x, 0))
 threshold = df['Label'].mean()
 threshold = round(threshold, 3)
+
 
 with open(r'model.pkl', 'rb') as f:
     model = pickle.load(f)  
@@ -124,16 +125,17 @@ def get_cat():
 
     filtered_df = df[(df["Category"] == categoric_mapping[0]) & (df["Sub-Category"] == categoric_mapping[1]) & (df["Sub-Sub-Category"] == categoric_mapping[2])]
     
-    rate_of_change = getpred(filtered_df, "Rate of Change", 7, 7)
-    standard_dev = getpred(filtered_df, "Standard Dev", 7, 7)
-    popularity = getpred(filtered_df, "Popularity", 7, 7)
+    days_s = 30
+    rate_of_change = getpred(filtered_df, "Rate of Change", days_s, days_s)
+    standard_dev = getpred(filtered_df, "Standard Dev", days_s, days_s)
+    popularity = getpred(filtered_df, "Popularity", days_s, days_s)
     popularity = [round(num) for num in popularity]
 
     last_row = df.iloc[-1]
     last_date = datetime.strptime(str(last_row['Year']) + str(last_row['Month']).zfill(2) + str(last_row['Day']).zfill(2), '%Y%m%d')
     days = []
     week_day = []
-    for i in range(7):
+    for i in range(days_s):
         next_date = last_date + timedelta(days=i+1)
         next_day = next_date.strftime('%d')
         next_weekday = next_date.strftime('%A')
@@ -143,7 +145,7 @@ def get_cat():
 
 
     main_list = []
-    for i in range(7):
+    for i in range(days_s):
         temp = []
         temp.append(categoric_mapping[0])
         temp.append(categoric_mapping[1])
@@ -209,9 +211,9 @@ def get_text():
     count = 0
     temp = df[(df['Category'] == cat) & (df['Sub-Category'] == subcat) & (df['Sub-Sub-Category'] == subsubcat)]
 
-    for i in range(len(temp)):
-        date = str(temp["Year"].tolist()[i]) + "-" + str(temp["Month"].tolist()[i]) + "-" + str(temp["Day"].tolist()[i]) + " (" + str(temp["Week_Day"].tolist()[i]) + ") "
-        original.append({ 'x': date, 'label': temp["Label"].tolist()[i] })
+    # for i in range(len(temp)):
+    #     date = str(temp["Year"].tolist()[i]) + "-" + str(temp["Month"].tolist()[i]) + "-" + str(temp["Day"].tolist()[i]) + " (" + str(temp["Week_Day"].tolist()[i]) + ") "
+    #     original.append({ 'x': date, 'label': temp["Label"].tolist()[i] })
 
     # last_date = str(temp["Year"].tolist()[len(temp)-1]) + "-" + \
     #             str(temp["Month"].tolist()[len(temp)-1]) + "-" + \
@@ -250,13 +252,13 @@ def get_text():
         mapping = latest_data["Category"].iloc[i] + " " + latest_data["Sub-Category"].iloc[i] + " " + latest_data["Sub-Sub-Category"].iloc[i]
         dictionary[mapping] = latest_data["Label"].iloc[i]
 
-    selected_mapping = subcat + " " + subsubcat
+    selected_mapping = cat + " " + subcat #+ " " + subsubcat
     filtered_dict = {k: v for k, v in dictionary.items() if k.startswith(selected_mapping)}
 
     bar_chart_data = []
     for i in range(len(filtered_dict)):
         sub_dict = {}
-        sub_dict['categoric_mapping'] = list(filtered_dict.keys())[i]
+        sub_dict['name'] = list(filtered_dict.keys())[i]
         sub_dict['value'] = list(filtered_dict.values())[i]
         bar_chart_data.append(sub_dict)
 
@@ -271,10 +273,9 @@ def get_text():
         trend_val = "Increasing"
     else:
          trend_val = "Decreasing"
-
-    max_price = result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['max'][0]
-    min_price = result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['min'][0]
-    mean_price = result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['mean'][0]
+    max_price = list(result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['max'])[0]
+    min_price = list(result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['min'])[0]
+    mean_price = list(result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['mean'])[0]
 
     return {"pred": pred, "original": original, "threshold": threshold_val, "trend": trend_val, 
             "min_price": min_price, "max_price": max_price, "mean_price": mean_price, "bar_chart_data":bar_chart_data}
