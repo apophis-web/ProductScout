@@ -16,6 +16,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 import statsmodels.api as sm
 from datetime import datetime, timedelta
+import hashlib
 
 df = pd.read_csv('processed_data.csv')
 dataset = pd.read_csv("../Model-Training/dataset.csv")
@@ -73,6 +74,9 @@ def calculate_trend(values):
 
 app = Flask(__name__)
 cors = CORS(app)
+client = MongoClient("mongodb://hassan:1234@ac-a5jnqbt-shard-00-00.9arxrak.mongodb.net:27017,ac-a5jnqbt-shard-00-01.9arxrak.mongodb.net:27017,ac-a5jnqbt-shard-00-02.9arxrak.mongodb.net:27017/test?replicaSet=atlas-ckjaji-shard-0&ssl=true&authSource=admin")
+db = client.scoutuser
+users = db['users']
 
 @app.route('/search', methods = ['POST'])
 def get_cat():
@@ -279,6 +283,67 @@ def get_text():
 
     return {"pred": pred, "original": original, "threshold": threshold_val, "trend": trend_val, 
             "min_price": min_price, "max_price": max_price, "mean_price": mean_price, "bar_chart_data":bar_chart_data}
-    
+
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    username = data['username']
+    password = data['password']
+
+    if not username or not password:
+        return jsonify({'error': 'Missing username or password'}), 200
+
+    user = users.find_one({'username': username})
+
+    if user:
+        return jsonify({'error': 'Username already exists'}), 200
+
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
+    new_user = {
+        'username': username,
+        'password': hashed_password,
+        'preference':[]
+    }
+    users.insert_one(new_user)
+
+    return jsonify({'message': 'User created successfully'}), 200
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data['username']
+    password = data['password']
+
+    if not username or not password:
+        return jsonify({'error': 'Missing username or password'}), 200
+
+    user = users.find_one({'username': username})
+
+    if not user:
+        return jsonify({'error': 'User not found'}), 200
+
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
+    if user['password'] != hashed_password:
+        return jsonify({'error': 'Invalid password'}), 200
+
+    return jsonify({'message': 'Logged in successfully'}), 200
+
+@app.route('/prefset', methods=['POST'])
+def prefset():
+    data = request.get_json()
+    username = data['username']
+    pref = data['pref']
+    users.update_one({"username":username },
+             {"$set" : {"preference":pref}})
+    return jsonify({'message': 'Done'}), 200
+
+
+@app.route('/get_all_pref', methods = ['GET'])    
+def get_all_pref():
+    return {"categories":[', '.join(sublist) for sublist in df[['Category']].drop_duplicates().values.tolist()]}
+
 if __name__ == "__main__":
     app.run(port = 5000,debug = True,)
