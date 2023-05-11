@@ -55,7 +55,9 @@ with open(r'category_embeddings_categorical.pkl', 'rb') as f:
 with open(r'category_embeddings_hierarchical.pkl', 'rb') as f:
     category_query_embeddings_hierarchical = pickle.load(f)
 
-# sentence_transformer = SentenceTransformer('sentence-transformers/all-MiniLM-L12-v1')
+with open(r'keyword_embeddings.pkl', 'rb') as f:
+    keyword_embeddings = pickle.load(f)
+
 sentencetransformer = SentenceTransformer('bert-base-nli-mean-tokens')
 
 def getpred(df, columnname, days, span = 7):
@@ -91,7 +93,6 @@ def get_cat():
     sorted_scores_categorical = sorted(category_scores, key=lambda x: x[1], reverse=True)
 
     category_scores_hierarchical = []
-    user_query_embedding = sentencetransformer.encode([user_query])[0]
     for i, category in enumerate(categories):
         category1_score = cosine_similarity(user_query_embedding.reshape(1, -1), category_query_embeddings_hierarchical[i].reshape(1, -1))
         category2_score = cosine_similarity(user_query_embedding.reshape(1, -1), category_query_embeddings_hierarchical[i+len(categories)].reshape(1, -1))
@@ -111,7 +112,23 @@ def get_cat():
     SCORES2.append(sorted_scores_hierarchical[1][0])
     SCORES2.append(sorted_scores_hierarchical[2][0])
 
-    combined_list = SCORES1 + SCORES2
+    for index, d in enumerate(result):
+        similarities = cosine_similarity(keyword_embeddings[index], [user_query_embedding])
+        d['Similarity'] = similarities.sum()
+
+    similarity_scores = [d['Similarity'] for d in result]
+    max_similarity_indices = sorted(range(len(similarity_scores)), key=lambda i: similarity_scores[i], reverse=True)[:3]
+
+    SCORES3 = []
+    for i in range(3):
+        temp = []
+        temp.append(result[max_similarity_indices[i]]['Category'])
+        temp.append(result[max_similarity_indices[i]]['Sub-Category'])
+        temp.append(result[max_similarity_indices[i]]['SubSub-Category'])
+        SCORES3.append(temp)
+
+    combined_list = SCORES1 + SCORES2 + SCORES3
+
     counts = {}
     for lst in combined_list:
         key = tuple(lst)
@@ -121,11 +138,13 @@ def get_cat():
             counts[key] = 1
 
     sorted_counts = sorted(counts.items(), key=lambda x: x[1], reverse=True)
+
     for key, count in sorted_counts:
-        if list(key) in SCORES1 or list(key) in SCORES2:
+        if list(key) in SCORES1 or list(key) in SCORES2 or list(key) in SCORES3:
             categoric_mapping = list(key)
             break
 
+    print(categoric_mapping)
 
     filtered_df = df[(df["Category"] == categoric_mapping[0]) & (df["Sub-Category"] == categoric_mapping[1]) & (df["Sub-Sub-Category"] == categoric_mapping[2])]
     
