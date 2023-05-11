@@ -258,7 +258,7 @@ def get_text():
 
 
     for i in range(len(predictions)):
-        original.append({ 'x': next_dates[i], 'label': predictions[i] })
+        original.append({ 'x': next_dates[i], 'trend': predictions[i] })
     mean = sum(predictions) / len(predictions)
     trend = calculate_trend(predictions)
 
@@ -285,23 +285,40 @@ def get_text():
         sub_dict['value'] = list(filtered_dict.values())[i]
         bar_chart_data.append(sub_dict)
 
+    score = 0
     if (threshold < mean):
+        score += 3
         threshold_val = "High"
     elif ((threshold / 2) < mean):
+        score += 2
         threshold_val = "Moderate"
     elif ((threshold / 2) > mean):
+        score += 1
         threshold_val = "Low"
         
     if trend > 0:
+        score += 2
         trend_val = "Increasing"
     else:
+         score -= 1
          trend_val = "Decreasing"
+
+    if(score == 5):
+        tfs = "98%"
+    elif(score == 4):
+        tfs = "78%"
+    elif(score == 3):
+        tfs = "63%"
+    elif(score == 2):
+        tfs = "46%"
+    elif(score == 1):
+        tfs = "22%"
     max_price = list(result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['max'])[0]
     min_price = list(result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['min'])[0]
     mean_price = list(result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['mean'])[0]
 
     return {"pred": pred, "original": original, "threshold": threshold_val, "trend": trend_val, 
-            "min_price": min_price, "max_price": max_price, "mean_price": mean_price, "bar_chart_data":bar_chart_data}
+            "min_price": min_price, "max_price": max_price, "mean_price": mean_price, "bar_chart_data":bar_chart_data, "score":tfs}
 
 
 @app.route('/signup', methods=['POST'])
@@ -363,6 +380,42 @@ def prefset():
 @app.route('/get_all_pref', methods = ['GET'])    
 def get_all_pref():
     return {"categories":[', '.join(sublist) for sublist in df[['Category']].drop_duplicates().values.tolist()]}
+
+
+@app.route('/get_user_hot', methods = ['POST'])    
+def get_user_hot():
+    data = request.get_json()
+    username = data['username']
+    user = users.find_one({'username': username})
+
+    cat = user['preference']
+    allprod = []
+    indup = {}
+    for i in cat:
+        temp = df[df['Category'] == i]
+        for j in range(len(temp)):
+            sub_sub_category = temp.iloc[j]['Sub-Sub-Category']
+            rate_of_change = temp.iloc[j]['Label']
+            if sub_sub_category not in indup:
+                indup[sub_sub_category] = rate_of_change
+            else:
+                indup[sub_sub_category] = max(indup[sub_sub_category], rate_of_change)
+
+    allprod = [{k: v} for k, v in indup.items()]
+    sorted_data = sorted(allprod, key=lambda item: list(item.values())[0], reverse=True)
+    grouped_df = df.groupby(['Year', 'Month', 'Day']).agg({'Rate of Change': 'mean'}).reset_index()
+    x = list(grouped_df[-30:]['Rate of Change'])
+    tremar = []
+    avg = 0
+    count = 0
+    for i in range(len(x)):
+        avg += x[i]
+        count += 1
+        tremar.append({"name":i, 'market_trend':x[i], 'running_average': avg/count})
+
+    return {"hot":sorted_data[:10], 'tre':tremar}
+
+
 
 if __name__ == "__main__":
     app.run(port = 5000,debug = True,)
