@@ -33,6 +33,34 @@ result['mean'] = result['mean'].apply(lambda x: round(x, 0))
 threshold = df['Label'].mean()
 threshold = round(threshold, 3)
 
+#------------------------------------------------#
+pop_df = pd.read_csv("C:\\Users\\Hassa\\OneDrive\\Desktop\\PRODUCT_SCOUT\\Back-End\\popularity_data.csv")
+
+keyword_data = []
+for i in range(len(pop_df)):
+    dictionary = {
+        "Category": pop_df['mapping'][i].split(' >')[0],
+        "Sub-Category": pop_df['mapping'][i].split(' > ')[1],
+        "SubSub-Category": pop_df['mapping'][i].split('> ')[2],
+        "Keyword": pop_df['query'][i]
+    }
+    keyword_data.append(dictionary)
+
+groups = {}
+for item in keyword_data:
+    key = (item['Category'], item['Sub-Category'], item['SubSub-Category'])
+    if key not in groups:
+        groups[key] = []
+    groups[key].append(item)
+
+keyword_result = []
+for group in groups.values():
+    combined = {'Category': group[0]['Category'], 'Sub-Category': group[0]['Sub-Category'], 'SubSub-Category': group[0]['SubSub-Category']}
+    keywords = [item['Keyword'] for item in group]
+    combined['Keywords'] = keywords
+    keyword_result.append(combined)
+#------------------------------------------------#
+
 
 with open(r'model.pkl', 'rb') as f:
     model = pickle.load(f)  
@@ -58,6 +86,7 @@ with open(r'category_embeddings_hierarchical.pkl', 'rb') as f:
 with open(r'keyword_embeddings.pkl', 'rb') as f:
     keyword_embeddings = pickle.load(f)
 
+# sentence_transformer = SentenceTransformer('sentence-transformers/all-MiniLM-L12-v1')
 sentencetransformer = SentenceTransformer('bert-base-nli-mean-tokens')
 
 def getpred(df, columnname, days, span = 7):
@@ -93,6 +122,7 @@ def get_cat():
     sorted_scores_categorical = sorted(category_scores, key=lambda x: x[1], reverse=True)
 
     category_scores_hierarchical = []
+    user_query_embedding = sentencetransformer.encode([user_query])[0]
     for i, category in enumerate(categories):
         category1_score = cosine_similarity(user_query_embedding.reshape(1, -1), category_query_embeddings_hierarchical[i].reshape(1, -1))
         category2_score = cosine_similarity(user_query_embedding.reshape(1, -1), category_query_embeddings_hierarchical[i+len(categories)].reshape(1, -1))
@@ -112,23 +142,24 @@ def get_cat():
     SCORES2.append(sorted_scores_hierarchical[1][0])
     SCORES2.append(sorted_scores_hierarchical[2][0])
 
-    for index, d in enumerate(result):
+    #-------------------------------------------------#
+    for index, d in enumerate(keyword_result):
         similarities = cosine_similarity(keyword_embeddings[index], [user_query_embedding])
         d['Similarity'] = similarities.sum()
 
-    similarity_scores = [d['Similarity'] for d in result]
+    similarity_scores = [d['Similarity'] for d in keyword_result]
     max_similarity_indices = sorted(range(len(similarity_scores)), key=lambda i: similarity_scores[i], reverse=True)[:3]
 
     SCORES3 = []
     for i in range(3):
         temp = []
-        temp.append(result[max_similarity_indices[i]]['Category'])
-        temp.append(result[max_similarity_indices[i]]['Sub-Category'])
-        temp.append(result[max_similarity_indices[i]]['SubSub-Category'])
+        temp.append(keyword_result[max_similarity_indices[i]]['Category'])
+        temp.append(keyword_result[max_similarity_indices[i]]['Sub-Category'])
+        temp.append(keyword_result[max_similarity_indices[i]]['SubSub-Category'])
         SCORES3.append(temp)
+    #-------------------------------------------------#
 
     combined_list = SCORES1 + SCORES2 + SCORES3
-
     counts = {}
     for lst in combined_list:
         key = tuple(lst)
@@ -138,13 +169,11 @@ def get_cat():
             counts[key] = 1
 
     sorted_counts = sorted(counts.items(), key=lambda x: x[1], reverse=True)
-
     for key, count in sorted_counts:
-        if list(key) in SCORES1 or list(key) in SCORES2 or list(key) in SCORES3:
+        if list(key) in SCORES1 or list(key) in SCORES2:
             categoric_mapping = list(key)
             break
 
-    print(categoric_mapping)
 
     filtered_df = df[(df["Category"] == categoric_mapping[0]) & (df["Sub-Category"] == categoric_mapping[1]) & (df["Sub-Sub-Category"] == categoric_mapping[2])]
     
@@ -302,7 +331,7 @@ def get_text():
     else:
          score -= 1
          trend_val = "Decreasing"
-
+    tfs = "0%"
     if(score == 5):
         tfs = "98%"
     elif(score == 4):
@@ -311,7 +340,7 @@ def get_text():
         tfs = "63%"
     elif(score == 2):
         tfs = "46%"
-    elif(score == 1):
+    else:
         tfs = "22%"
     max_price = list(result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['max'])[0]
     min_price = list(result[(result['Category'] == cat) & (result['Sub-Category'] == subcat) & (result['SubSub-Category'] == subsubcat)]['min'])[0]
