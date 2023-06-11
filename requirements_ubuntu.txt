@@ -37,5 +37,4 @@ transformers
 truststore
 urllib3_secure_extra
 wincertstore
-xmlrpc.client
 zstandard
