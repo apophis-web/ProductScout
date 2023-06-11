@@ -25,7 +25,6 @@ Pillow
 protobuf
 pymongo
 pyOpenSSL
-pywin32
 railroad
 scikit_learn
 sentence_transformers
