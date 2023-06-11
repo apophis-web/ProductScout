@@ -48,4 +48,3 @@ urllib3_secure_extra==0.1.0
 wincertstore==0.2.1
 xmlrpclib==1.0.1
 zstandard==0.19.0
-~tatsmodels==0.12.2
